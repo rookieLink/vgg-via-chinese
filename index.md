@@ -1,37 +1,21 @@
-## Welcome to GitHub Pages
+## 项目介绍
 
-You can use the [editor on GitHub](https://github.com/rookieLink/vgg-via-chinese/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+VIA是由VGG组织开发的一款开源的对图像尽心数据标注的项目，但是只有英文版本，本人基于个人兴趣，对此项目进行了整体汉化，供大家参考使用
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
+## 项目使用
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+直接在浏览器中打开via.html文件即可使用。
 
-```markdown
-Syntax highlighted code block
+本人曾将该项目集成到vue项目中使用，中间踩了不少坑，出现了压缩代码后文本节点被压缩掉等问题，个人已经在代码中对这种情况进行bug处理
 
-# Header 1
-## Header 2
-### Header 3
+如果你不知道怎样将该项目集成到你的现有项目中，可以发送邮件到rookielink@163.com进行咨询
 
-- Bulleted
-- List
+## 项目作者
 
-1. Numbered
-2. List
+VGG组织（原项目开发组织）、rookielink（本人进行汉化翻译工作）
 
-**Bold** and _Italic_ and `Code` text
+## 联系方式
 
-[Link](url) and ![Image](src)
-```
+email：rookielink163.com
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/rookieLink/vgg-via-chinese/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
