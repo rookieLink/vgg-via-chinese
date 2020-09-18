@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <!--
+        VGG Image Annotator (via)
+        www.robots.ox.ac.uk/~vgg/software/via/
+
+        Copyright (c) 2016-2018, Abhishek Dutta, Visual Geometry Group, Oxford University and VIA Contributors..
+        All rights reserved.
+
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+
+        Redistributions of source code must retain the above copyright notice, this
+        list of conditions and the following disclaimer.
+        Redistributions in binary form must reproduce the above copyright notice,
+        this list of conditions and the following disclaimer in the documentation
+        and/or other materials provided with the distribution.
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+        ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+        LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+        CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+        SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+        INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+        CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+        ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+        POSSIBILITY OF SUCH DAMAGE.
+      -->
+    <title>VIA汉化</title>
+    <meta name="author" content="rookielink">
+    <meta name="description" content="本系统是由rookielink个人基于VIA项目进行中文汉化">
+
+    <!--
+    Development of VIA is supported by the EPSRC programme grant
+    Seebibyte: Visual Search for the Era of Big Data (EP/M013774/1).
+    Using Google Analytics, we record the usage of this application.
+    This data is used in reporting of this programme grant.
+
+    If you do not wish to share this data, you can safely remove the
+    javascript code below.
+    -->
+    <script type="text/javascript">
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+      //__ENABLED_BY_PACK_SCRIPT__ga('create', 'UA-20555581-2', 'auto');
+      //__ENABLED_BY_PACK_SCRIPT__ga('set', 'page', 'via-2.0.0.html');
+      //__ENABLED_BY_PACK_SCRIPT__ga('send', 'pageview');
+    </script>
+    <script>
+        console.log('%c本页面由rookielink个人进行汉化，并对此项目代码进行bug修复\n\n有兴趣可以邮箱联系 email:rookielink@163.com', 'color: #7991ed')
+    </script>
+
+    <link rel="stylesheet" type="text/css" href="via.css">
+  </head>
+
+  <body onload="_via_init()" onresize="_via_update_ui_components()">
+  <!-- <body> -->
+
+    <!--
+        SVG icon set definitions
+        Material icons downloaded from https://material.io/icons
+      -->
+    <svg style="display:none;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <defs>
+        <!-- 这块是via logo图 -->
+        <symbol id="via_logo">
+          <!-- Logo designed by Abhishek Dutta <adutta@robots.ox.ac.uk>, May 2018 -->
+          <title>VGG图像标注logo</title>
+          <rect width="400" height="160" x="0" y="0" fill="#212121"></rect>
+
+          <text x="56" y="130" font-family="Serif" font-size="100" fill="white">V</text>
+          <text x="180" y="130" font-family="Serif" font-size="100" fill="white">I</text>
+          <text x="270" y="130" font-family="Serif" font-size="100" fill="white">A</text>
+
+          <rect width="80" height="100" x="52" y="40" stroke="yellow" fill="none" stroke-width="2"></rect>
+          <text x="72" y="30" font-family="'Comic Sans MS', cursive, sans-serif" font-size="18" fill="yellow">VGG</text>
+
+          <rect width="50" height="100" x="175" y="45" stroke="yellow" fill="none" stroke-width="2"></rect>
+          <text x="175" y="35" font-family="'Comic Sans MS', cursive, sans-serif" font-size="18" fill="yellow">Image</text>
+
+          <rect width="80" height="100" x="265" y="40" stroke="yellow" fill="none" stroke-width="2"></rect>
+          <text x="265" y="30" font-family="'Comic Sans MS', cursive, sans-serif" font-size="18" fill="yellow">Annotator</text>
+        </symbol>
+        <!-- 矩形图 -->
+        <symbol id="shape_rectangle">
+          <title>矩形区域</title>
+          <rect width="20" height="12" x="6" y="10" stroke-width="2"></rect>
+        </symbol>
+        <!-- 圆形 -->
+        <symbol id="shape_circle">
+          <title>圆形区域</title>
+          <circle r="10" cx="16" cy="16" stroke-width="2"></circle>
+        </symbol>
+        <!-- 椭圆 -->
+        <symbol id="shape_ellipse">
+          <title>椭圆形区域</title>
+          <ellipse rx="12" ry="8" cx="16" cy="16" stroke-width="2"></ellipse>
+        </symbol>
+        <!-- 多边形 -->
+        <symbol id="shape_polygon">
+          <title>多边形区域</title>
+          <path d="M 15.25,2.2372 3.625,11.6122 6,29.9872 l 20.75,-9.625 2.375,-14.75 z" stroke-width="2"></path>
+        </symbol>
+        <!-- 点 -->
+        <symbol id="shape_point">
+          <title>点区域</title>
+          <circle r="3" cx="16" cy="16" stroke-width="2"></circle>
+        </symbol>
+        <!-- 折线 -->
+        <symbol id="shape_polyline">
+          <title>折线图形区域</title>
+          <path d="M 2,12 10,24 18,12 24,18" stroke-width="2"></path>
+          <circle r="1" cx="2" cy="12" stroke-width="2"></circle>
+          <circle r="1" cx="10" cy="24" stroke-width="2"></circle>
+          <circle r="1" cx="18" cy="12" stroke-width="2"></circle>
+          <circle r="1" cx="24" cy="18" stroke-width="2"></circle>
+        </symbol>
+
+        <!--项目中图标来自material Material icons downloaded from https://material.io/icons -->
+        <symbol id="icon_settings">
+          <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"></path>
+        </symbol>
+        <symbol id="icon_save">
+          <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"></path>
+        </symbol>
+        <symbol id="icon_open">
+          <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"></path>
+        </symbol>
+        <symbol id="icon_gridon">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"></path>
+        </symbol>
+        <symbol id="icon_gridoff">
+          <path d="M8 4v1.45l2 2V4h4v4h-3.45l2 2H14v1.45l2 2V10h4v4h-3.45l2 2H20v1.45l2 2V4c0-1.1-.9-2-2-2H4.55l2 2H8zm8 0h4v4h-4V4zM1.27 1.27L0 2.55l2 2V20c0 1.1.9 2 2 2h15.46l2 2 1.27-1.27L1.27 1.27zM10 12.55L11.45 14H10v-1.45zm-6-6L5.45 8H4V6.55zM8 20H4v-4h4v4zm0-6H4v-4h3.45l.55.55V14zm6 6h-4v-4h3.45l.55.54V20zm2 0v-1.46L17.46 20H16z"></path>
+        </symbol>
+        <symbol id="icon_next">
+          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path>
+        </symbol>
+        <symbol id="icon_prev">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+        </symbol>
+        <symbol id="icon_list">
+          <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"></path>
+        </symbol>
+        <symbol id="icon_zoomin">
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+          <path d="M12 10h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+        </symbol>
+        <symbol id="icon_zoomout">
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zM7 9h5v1H7z"></path>
+        </symbol>
+        <symbol id="icon_copy">
+          <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"></path>
+        </symbol>
+        <symbol id="icon_paste">
+          <path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"></path>
+        </symbol>
+        <symbol id="icon_pasten">
+          <path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"></path>
+          <text x="8" y="18">n</text>
+        </symbol>
+        <symbol id="icon_pasteundo">
+          <path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"></path>
+          <text x="8" y="18">x</text>
+        </symbol>
+        <symbol id="icon_selectall">
+          <path d="M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2zM7 17h10V7H7v10zm2-8h6v6H9V9z"></path>
+        </symbol>
+        <symbol id="icon_close">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+        </symbol>
+        <symbol id="icon_insertcomment">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"></path>
+        </symbol>
+        <symbol id="icon_checkbox">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+        </symbol>
+        <symbol id="icon_fileupload">
+          <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"></path>
+        </symbol>
+        <symbol id="icon_filedownload">
+          <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"></path>
+        </symbol>
+      </defs>
+    </svg>
+
+    <!-- 收集用户输入 used by invoke_with_user_inputs() to gather user inputs -->
+    <div id="user_input_panel"></div>
+
+    <!-- 展示状态信息 to show status messages -->
+    <div id="message_panel">
+      <div id="message_panel_content" class="content"></div>
+    </div>
+
+    <!--标注编辑器的电子表格（位于下方） spreadsheet like editor for annotations -->
+    <div id="annotation_editor_panel">
+      <div class="button_panel">
+        <span class="text_button" onclick="edit_region_metadata_in_annotation_editor()" id="button_edit_region_metadata" title="区域手动标注">区域标注</span>
+        <span class="text_button" onclick="edit_file_metadata_in_annotation_editor()" id="button_edit_file_metadata" title="文件手动标注">文件标注</span>
+
+        <!-- 上下左右按钮区域 -->
+        <span class="button" style="float:right;margin-right:0.2rem;" onclick="annotation_editor_toggle_all_regions_editor()" title="Close this window of annotation editor">&times;</span>
+        <span class="button" style="float:right;margin-right:0.2rem;" onclick="annotation_editor_increase_panel_height()" title="增加这块区域的高度">&uarr;</span>
+        <span class="button" style="float:right;margin-right:0.2rem;" onclick="annotation_editor_decrease_panel_height()" title="减小这块区域的高度">&darr;</span>
+        <span class="button" style="float:right;margin-right:0.2rem;" onclick="annotation_editor_increase_content_size()" title="增大标注编辑器内容的大小">&plus;</span>
+        <span class="button" style="float:right;margin-right:0.2rem;" onclick="annotation_editor_decrease_content_size()" title="减小标注编辑器内容的大小">&minus;</span>
+      </div>
+      <!-- 由js添加一块区域进来，标注编辑器 -->
+      <!-- here, a child div with id="annotation_editor" is added by javascript -->
+    </div>
+
+    <div class="top_panel" id="ui_top_panel">
+      <!-- 菜单栏 menu bar -->
+      <div class="menubar">
+        <ul>
+          <li onclick="show_home_panel()" style="cursor:pointer;">主页</li>
+          <li>项目
+            <ul>
+              <li onclick="project_open_select_project_file()" title="加载VIA项目(通过JOSN文件)">添加</li>
+              <li onclick="project_save_with_confirm()" title="保存VIA项目(通过JOSN文件)">保存</li>
+              <li onclick="settings_panel_toggle()" title="显示/编辑项目设置">设置</li>
+              <li class="submenu_divider"></li>
+              <li onclick="sel_local_images() add_local_images()" title="添加电脑本地图片">添加本地文件</li>
+              <li onclick="add_local_images()" title="添加电脑本地图片">添加本地文件</li>
+
+              <li onclick="project_file_add_url_with_input()" title="从URL添加图片(例如 http://www.robots.ox.ac.uk/~vgg/software/via/images/swan.jpg)">从URL添加文件</li>
+              <li onclick="project_file_add_abs_path_with_input()" title="使用文件的绝对路径添加图片(例如 /home/abhishek/image1.jpg)">使用绝对路径添加文件</li>
+              <li onclick="sel_local_data_file('files_url')" title="从存储在文本文件中的web url或绝对路径列表中添加图像(每行一个url或路径)">从文本文件添加url或路径</li>
+              <li onclick="project_file_remove_with_confirm()" title="删除选定的文件(即当前显示的文件)">移除当前文件</li>
+              <li class="submenu_divider"></li>
+              <li onclick="sel_local_data_file(&#39;attributes&#39;)" title="从JSON文件导入区域和文件属性">导入区域/文件属性</li>
+              <li onclick="project_save_attributes()" title="导出区域和文件属性到一个JSON文件">导出区域/文件属性</li>
+            </ul>
+          </li>
+
+          <li>标注
+            <ul>
+                <li onclick="download_all_region_data(&#39;csv&#39;)" title="将标注导出到CSV文件">导出标注（csv格式）</li>
+                <li onclick="download_all_region_data(&#39;json&#39;)" title="将标注导出到json文件">导出标注 (json格式)</li>
+                <li onclick="download_all_region_data(&#39;coco&#39;, &#39;json&#39;)" title="导出标记为coco(http://cocodataset.org)格式">导出标注（coco格式）</li>
+                <li onclick="" class="submenu_divider"></li>
+                <li onclick="sel_local_data_file(&#39;annotations&#39;)" title="从CSV文件导入注释">导入标注（csv格式）</li>
+                <li onclick="sel_local_data_file(&#39;annotations&#39;)" title="从JSON文件导入注释">导入标注（json格式）</li>
+                <li onclick="sel_local_data_file(&#39;annotations_coco&#39;)" title="从coco格式的json文件导入标注 (http://cocodataset.org)">导入标注（coco格式）</li>
+  
+                <li class="submenu_divider"></li>
+                <li onclick="show_annotation_data()" title="展示标记预览(在浏览器新窗口打开)">预览标注</li>
+                <li onclick="download_as_image()" title="下载包含标记的图片">下载为一个图片</li>
+            </ul>
+          </li>
+
+          <li>视图
+            <ul>
+              <li onclick="image_grid_toggle()" title="切换单张图片/网格图片列表">切换图片网格视图</li>
+              <li onclick="leftsidebar_toggle()" title="展示/隐藏左侧操作栏">切换左侧栏</li>
+<li onclick="toggle_img_fn_list_visibility()" title="显示/隐藏面板以更新与文件和区域对应的注释">切换图片名称列表</li>
+              <li class="submenu_divider"></li>
+              <li onclick="toggle_attributes_editor()" title="显示/隐藏面板以更新文件和区域属性">切换属性编辑器</li>
+              <li onclick="annotation_editor_toggle_all_regions_editor()" title="显示或隐藏面板以更新与文件和区域对应的注释">切换标注编辑器（Space）</li>
+              <li class="submenu_divider"></li>
+              <li onclick="toggle_region_boundary_visibility()" title="展示/隐藏 区域边框线(b)">展示/隐藏 区域边框线(b)</li>
+              <li onclick="toggle_region_id_visibility()" title="展示/隐藏区域标记(l)">展示/隐藏区域标记(l)</li>
+              <li onclick="toggle_region_info_visibility()" title="展示/隐藏 区域（坐标）信息">展示/隐藏 区域（坐标）信息</li>
+            </ul>
+          </li>
+
+          <li>帮助
+            <ul>
+              <li onclick="set_display_area_content(VIA_DISPLAY_AREA_CONTENT_NAME.PAGE_GETTING_STARTED)" title="显示开始使用此应用程序的指南">开始</li>
+              <li title="访问此应用程序的项目页面"><a href="http://www.robots.ox.ac.uk/~vgg/software/via/" target="_blank">VGG项目页面</a></li>
+              <li onclick="" title="向此应用程序的开发人员报告问题(需要gitlab账号)"><a href="https://gitlab.com/vgg/via/issues" target="_blank">报告问题</a></li>
+              <li class="submenu_divider"></li>
+              <li><a target="_blank" href="https://gitlab.com/vgg/via/blob/master/Contributors.md" title="为开发VIA做出贡献的人员名单">贡献者</a></li>
+              <li onclick="set_display_area_content(VIA_DISPLAY_AREA_CONTENT_NAME.PAGE_LICENSE)" title="查看此应用程序的许可">许可证</li>
+              <li onclick="set_display_area_content(VIA_DISPLAY_AREA_CONTENT_NAME.PAGE_ABOUT)" title="显示有关此应用程序的更多细节">关于VIA</li>
+            </ul>
+          </li>
+        </ul>
+      </div> <!-- end of menubar -->
+
+      <!-- 快捷工具栏位置 -->
+      <!-- Shortcut toolbar -->
+      <div class="toolbar">
+        <svg onclick="project_open_select_project_file()" viewbox="0 0 24 24"><use xlink:href="#icon_open"></use><title>打开项目</title></svg>
+        <svg onclick="project_save_with_confirm()" viewbox="0 0 24 24"><use xlink:href="#icon_save"></use><title>保存项目</title></svg>
+        <svg onclick="settings_panel_toggle()" viewbox="0 0 24 24"><use xlink:href="#icon_settings"></use><title>更新项目设置</title></svg>
+        
+        <svg onclick="" viewbox="0 0 24 24"><use xlink:href="#icon_checkbox"></use><title>Locate Files</title></svg>
+       
+
+        <svg onclick="sel_local_data_file('annotations')" style="margin-left:1rem;" viewbox="0 0 24 24"><use xlink:href="#icon_fileupload"></use><title>从CSV导入标注</title></svg>
+        <svg onclick="download_all_region_data('csv')" viewbox="0 0 24 24"><use xlink:href="#icon_filedownload"></use><title>下载CSV格式标注</title></svg>
+
+        <svg onclick="image_grid_toggle()" id="toolbar_image_grid_toggle" style="margin-left:1rem;" viewbox="0 0 24 24"><use xlink:href="#icon_gridon"></use><title>网格展示图片列表</title></svg>
+        <svg onclick="annotation_editor_toggle_all_regions_editor()" viewbox="0 0 24 24"><use xlink:href="#icon_insertcomment"></use><title>切换标注编辑器</title></svg>
+
+        <svg onclick="move_to_prev_image()" style="margin-left:1rem;" viewbox="0 0 24 24"><use xlink:href="#icon_prev"></use><title>上一张</title></svg>
+        <svg onclick="toggle_img_fn_list_visibility()" viewbox="0 0 24 24"><use xlink:href="#icon_list"></use><title>切换文件列表显示</title></svg>
+        <svg onclick="move_to_next_image()" viewbox="0 0 24 24"><use xlink:href="#icon_next"></use><title>下一张</title></svg>
+
+        <svg onclick="zoom_in()" style="margin-left:1rem;" viewbox="0 0 24 24"><use xlink:href="#icon_zoomin"></use><title>放大</title></svg>
+        <svg onclick="zoom_out()" viewbox="0 0 24 24"><use xlink:href="#icon_zoomout"></use><title>缩小</title></svg>
+
+
+        <svg onclick="sel_all_regions()" viewbox="0 0 24 24" style="margin-left:1rem;"><use xlink:href="#icon_selectall"></use><title>选中所有区域</title></svg>
+        <svg onclick="copy_sel_regions()" viewbox="0 0 24 24"><use xlink:href="#icon_copy"></use><title>拷贝区域</title></svg>
+        <svg onclick="paste_sel_regions_in_current_image()" viewbox="0 0 24 24"><use xlink:href="#icon_paste"></use><title>粘贴区域</title></svg>
+        <svg onclick="paste_to_multiple_images_with_confirm()" viewbox="0 0 24 24"><use xlink:href="#icon_pasten"></use><title>批量粘贴区域</title></svg>
+        <svg onclick="del_sel_regions_with_confirm()" viewbox="0 0 24 24"><use xlink:href="#icon_pasteundo"></use><title>取消批量粘贴区域</title></svg>
+        <svg onclick="del_sel_regions()" viewbox="0 0 24 24"><use xlink:href="#icon_close"></use><title>删除区域</title></svg>
+      </div>
+      <!-- <div class="uploadbar">
+          <svg onclick="upload_data_json()" viewbox="0 0 24 24"><use xlink:href="#icon_filedownload"></use><title>上传数据</title></svg><div onclick="upload_data_json()" >完成并上传</div>
+      </div> -->
+      <!-- 快捷工具栏显示结束 end of shortcut toolbar -->
+      <input type="file" id="invisible_file_input" name="files[]" style="display:none">
+    </div> <!-- endof #top_panel -->
+
+    <!-- Middle Panel contains a left-sidebar and image display areas -->
+    <!-- 中间区域显示 -->
+    <div class="middle_panel">
+      <!-- this panel contains a button to shows the left side bar -->
+      <!-- 左侧展开按钮（当左侧操作栏隐藏时） -->
+      <div id="leftsidebar_collapse_panel">
+        <span class="text_button" onclick="leftsidebar_toggle()" title="展示左侧操作栏">&rtrif;</span>
+      </div>
+      <!-- 左侧区域 -->
+      <div id="leftsidebar">
+        <!-- 操作栏大小和显示按钮 -->
+        <div class="leftsidebar_accordion_panel show" style="float:right; border:2px solid #f2f2f2;">
+          <span class="text_button" onclick="leftsidebar_decrease_width()" title="减小这块操作区域的宽度">&larr;</span>
+          <span class="text_button" onclick="leftsidebar_increase_width()" title="增加这块操作区域的宽度">&rarr;</span>
+          <span class="text_button" onclick="leftsidebar_toggle()" title="展示/隐藏这块操作区域">&ltrif;</span>
+        </div>
+        <!-- 标注图形选择区域 -->
+        <button class="leftsidebar_accordion active">区域形状</button>
+        <div class="leftsidebar_accordion_panel show">
+          <ul class="region_shape">
+            <li id="region_shape_rect" class="selected" onclick="select_region_shape('rect')" title="举行 (快捷键 1)"><svg height="32" viewbox="0 0 32 32"><use xlink:href="#shape_rectangle"></use></svg></li>
+            <li id="region_shape_circle" onclick="select_region_shape('circle')" title="圆形 (快捷键 2)"><svg height="32" viewbox="0 0 32 32"><use xlink:href="#shape_circle"></use></svg></li>
+            <li id="region_shape_ellipse" onclick="select_region_shape('ellipse')" title="椭圆 (快捷键 3)"><svg height="32" viewbox="0 0 32 32"><use xlink:href="#shape_ellipse"></use></svg></li>
+            <li id="region_shape_polygon" onclick="select_region_shape('polygon')" title="多边形 (快捷键 4)"><svg height="32" viewbox="0 0 32 32"><use xlink:href="#shape_polygon"></use></svg></li>
+            <li id="region_shape_point" onclick="select_region_shape('point')" title="点 (快捷键 5)"><svg height="32" viewbox="0 0 32 32"><use xlink:href="#shape_point"></use></svg></li>
+            <li id="region_shape_polyline" onclick="select_region_shape('polyline')" title="折线 (快捷键 6)"><svg height="32" viewbox="0 0 32 32"><use xlink:href="#shape_polyline"></use></svg></li>
+          </ul>
+          <!-- 区域像素位置区域 -->
+          <div id="region_info" class="display_none">&nbsp;</div>
+        </div>
+
+        <!-- 项目区域 Project -->
+        <button class="leftsidebar_accordion active" id="project_panel_title">项目</button>
+        <div class="leftsidebar_accordion_panel show" id="img_fn_list_panel">
+          <div id="project_info_panel">
+            <div class="row">
+              <span class="col"><label for="project_name">名称: </label></span>
+              <span class="col"><input type="text" value="" onchange="project_on_name_update(this)" id="project_name" title="VIA项目名称"></span>
+            </div>
+          </div>
+          <div id="project_tools_panel">
+            <div class="button_panel" style="margin:0.1rem 0;" >
+              <select style="width:48%" id="filelist_preset_filters_list" onchange="img_fn_list_onpresetfilter_select()" title="使用预定义的过滤条件过滤文件">
+                <option value="all">所有文件</option>
+                <option value="files_without_region">展示没有区域的文件</option>
+                <option value="files_missing_region_annotations">展示没有进行区域标注的文件</option>
+                <option value="files_missing_file_annotations">展示没有文件标注的文件</option>
+                <option value="files_error_loading">展示没法加载的图片</option>
+                <option value="regex">正则表达式</option>
+              </select>
+              <input style="width:50%" type="text" placeholder="正则表达式" oninput="img_fn_list_onregex()" id="img_fn_list_regex" title="使用正则表达式过滤">
+            </div>
+          </div>
+          <div id="img_fn_list"></div>
+          <p>
+            <div class="button_panel">
+              <span class="button" onclick="sel_local_images()" title="从本地磁盘添加新文件">添加文件</span>
+              <span class="button" onclick="project_file_add_url_with_input()" title="使用URL添加新文件">添加URL</span>
+              <span class="button" onclick="project_file_remove_with_confirm()" title="从项目中移除文件（备注：最近一次被展示的图片）">删除</span>
+            </div>
+          </p>
+        </div>
+
+        <!-- 属性区域 Attributes -->
+        <button class="leftsidebar_accordion" id="attributes_editor_panel_title">属性</button>
+        <div class="leftsidebar_accordion_panel" id="attributes_editor_panel">
+          <div class="button_panel" style="padding:1rem 0;">
+            <span class="text_button" onclick="show_region_attributes_update_panel()" id="button_show_region_attributes" title="展示区域属性">区域属性</span>
+            <span class="text_button" onclick="show_file_attributes_update_panel()" id="button_show_file_attributes" title="展示图片属性">文件属性</span>
+          </div>
+          <div id="attributes_update_panel">
+            <div class="button_panel">
+              <input style="width:70%" type="text" placeholder="属性名称" id="user_input_attribute_id" value="">
+              <span id="button_add_new_attribute" class="button" onclick="add_new_attribute_from_user_input()" title="添加新属性">&plus;</span>
+              <span id="button_del_attribute" class="button" onclick="delete_existing_attribute_with_confirm()" title="删除已存在的属性">&minus;</span>
+            </div>
+            <div class="button_panel" style="margin:0.1rem 0;" >
+              <select style="width:100%" id="attributes_name_list" onchange="update_current_attribute_id(this)" title="现有的属性列表"></select>
+            </div>
+            <div id="attribute_properties"></div>
+            <div id="attribute_options"></div>
+            <p style="text-align:center">
+              <span class="text_button" title="展示一个所有人工标注的类似电子表格的编辑器" onclick="annotation_editor_toggle_all_regions_editor()">切换标注编辑器</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- 快捷键区域 -->
+        <button class="leftsidebar_accordion">快捷键</button>
+        <div class="leftsidebar_accordion_panel">
+          <div style="display:block; text-align:center; padding:1rem;">仅在操作图像时可用</div>
+          <table>
+            <tr>
+              <td style="width:8em;"><span class="key">&larr;</span>&nbsp;<span class="key">&uarr;</span>&nbsp;<span class="key">&rarr;</span>&nbsp;<span class="key">&darr;</span></td>
+              <td>移动选中区域1个像素(按住Shift键进行跳跃))</td>
+            </tr>
+            <tr>
+              <td><span class="key">a</span></td>
+              <td>选中所有区域</td>
+            </tr>
+
+            <tr>
+              <td><span class="key">c</span></td>
+              <td>拷贝选中区域</td>
+            </tr>
+            <tr>
+              <td><span class="key">v</span></td>
+              <td>粘贴选中区域</td>
+            </tr>
+            <tr>
+              <td><span class="key">d</span></td>
+              <td>删除选中区域</td>
+            </tr>
+            <tr>
+              <td><span class="key">Ctrl</span> + 滚轮滚动</td>
+              <td>放大/缩小 (鼠标悬浮在图片上)</td>
+            </tr>
+            <tr>
+              <td><span class="key">l</span></td>
+              <td>切换图片label显示</td>
+            </tr>
+            <tr>
+              <td><span class="key">b</span></td>
+              <td>切换区域边线显示</td>
+            </tr>
+            <tr>
+              <td><span class="key">Enter</span></td>
+              <td>结束绘制图形</td>
+            </tr>
+            <tr>
+              <td><span class="key">Backspace</span></td>
+              <td>删除最后一个多边形顶点</td>
+            </tr>
+          </table>
+
+          <div style="display:block; text-align:center; padding:1rem;">一直可以使用的</div>
+          <table>
+            <tr>
+              <td style="width:8em;"><span class="key">&larr;</span>&nbsp;<span class="key">&rarr;</span></td>
+              <td>切换到上一张/下一张图片</td>
+            </tr>
+            <tr>
+              <td><span class="key">+</span>&nbsp;<span class="key">-</span>&nbsp;<span class="key">=</span></td>
+              <td>放大/缩小/重置</td>
+            </tr>
+            <tr>
+              <td><span class="key">&uarr;</span></td>
+              <td>更新区域标记</td>
+            </tr>
+            <tr>
+              <td><span class="key">&darr;</span></td>
+              <td>更新区域颜色</td>
+            </tr>
+            <tr>
+              <td><span class="key">Spacebar</span></td>
+              <td>切换标注编辑器显示(按住Ctrl切换图片编辑器)</td>
+            </tr>
+            <tr>
+              <td><span class="key">Home</span> / <span class="key">h</span></td>
+              <td>跳到第一张图片</td>
+            </tr>
+            <tr>
+              <td><span class="key">End</span> / <span class="key">e</span></td>
+              <td>跳到最后一张图片</td>
+            </tr>
+            <tr>
+              <td><span class="key">PgUp</span> / <span class="key">u</span></td>
+              <td>跳到上几张图片</td>
+            </tr>
+            <tr>
+              <td><span class="key">PgDown</span> / <span class="key">d</span></td>
+              <td>跳到下几张图片</td>
+            </tr>
+
+            <tr>
+              <td><span class="key">Esc</span></td>
+              <td>取消正在进行的操作</td>
+            </tr>
+          </table>
+        </div>
+
+      </div> <!-- end of leftsidebar -->
+
+      <!-- 隐藏显示区域 -->
+      <!-- Main display area: contains image canvas, ... -->
+      <div id="display_area">
+        <div id="image_panel" class="display_area_content display_none">
+          <!-- buffer images using <img> element will be added here -->
+
+          <!-- @todo: in future versions, this canvas will be replaced by a <svg> element -->
+            <canvas id="region_canvas" width="1" height="1" tabindex="1">对不起，您的浏览器不支持本应用必须的HTML Canvas功能，请更换或者更新浏览器</canvas>
+            <!-- here, a child div with id="annotation_editor" is added by javascript -->
+        </div>
+
+        <!-- 窗格显示图片区域 -->
+        <div id="image_grid_panel" class="display_area_content display_none">
+
+          <div id="image_grid_group_panel">
+            <span class="tool">分组&nbsp; <select id="image_grid_toolbar_group_by_select" onchange="image_grid_toolbar_onchange_group_by_select(this)"></select></span>
+          </div>
+
+          <div id="image_grid_toolbar">
+            <span>选中</span>
+            <span id="image_grid_group_by_sel_img_count">0</span>
+            <span>/</span>
+            <span id="image_grid_group_by_img_count">0</span>
+            <span>当前组的图片, 显示</span>
+
+            <span>
+              <select id="image_grid_show_image_policy" onchange="image_grid_onchange_show_image_policy(this)">
+                <option value="all">所有图片(分页)</option>
+                <option value="first_mid_last">只显示第一个、中间的、最后一个</option>
+                <option value="even_indexed">偶数图片(0,2,4,...)</option>
+                <option value="odd_indexed">奇数图片(1,3,5,...)</option>
+                <option value="gap5">图片 1, 5, 10, 15,...</option>
+                <option value="gap25">图片 1, 25, 50, 75, ...</option>
+                <option value="gap50">图片 1, 50, 100, 150, ...</option>
+              </select>
+            </span>
+
+            <div id="image_grid_nav"></div>
+          </div>
+
+          <div id="image_grid_content">
+            <div id="image_grid_content_img"></div>
+            <svg xmlns:xlink="http://www.w3.org/2000/svg" id="image_grid_content_rshape"></svg>
+          </div>
+
+          <div id="image_grid_info">
+          </div>
+        </div> <!-- end of image grid panel -->
+
+        <!-- 设置界面区域 -->
+        <div id="settings_panel" class="display_area_content display_none">
+          <h2>设置</h2>
+          <div class="row">
+            <div class="variable">
+              <div class="name">项目名称</div>
+            </div>
+
+            <div class="value">
+              <input class="setting_value" type="text" id="_via_settings.project.name"/>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="variable">
+              <div class="name">默认路径</div>
+              <div class="desc">如果项目中的所有图像都保存在一个文件夹中，请将默认路径设置为该文件夹的位置。默认情况下，VIA应用程序将从该文件夹加载图像。 注意：默认路径 <code>"./"</code> 指示包含 <code>via.html</code> 的应用程序文件还包含此项目中的图像。例如: <code>/datasets/VOC2012/JPEGImages/</code> 或者 <code>C:\Documents\data\</code>&nbsp;<strong>(注意尾随 <code>/</code> 和 <code>\</code></strong>)</div>
+            </div>
+
+            <div class="value">
+              <input class="setting_value" type="text" id="_via_settings.core.default_filepath" placeholder="/datasets/pascal/voc2012/VOCdevkit/VOC2012/JPEGImages/"/>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="variable">
+              <div class="name">搜索路径列表</div>
+              <div class="desc">如果定义多个路径，则将搜索所有这些文件夹以查找此项目中的图像。我们不推荐这种方法，因为在多个文件夹中搜索图像的计算成本很高。<ol id="_via_settings.core.filepath"></ol></div>
+            </div>
+
+            <div class="value">
+              <input class="setting_value" type="text" id="settings_input_new_filepath" placeholder="/datasets/pascal/voc2012/VOCdevkit/VOC2012/JPEGImages"/>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="variable">
+              <div class="name">区域标签</div>
+              <div class="desc">默认情况下，图像中的每个区域都使用region-id进行标记。在这里，您可以选择更具描述性的区域标签。</div>
+            </div>
+
+            <div class="value">
+              <select class="setting_value" id="_via_settings.ui.image.region_label"></select>
+            </div>
+          </div>
+
+          <div class="row">
+              <div class="variable">
+                <div class="name">区域颜色</div>
+                <div class="desc">默认情况下，每个区域都使用单一颜色绘制。使用此设置，可以为根据区域属性分组的区域指定唯一的颜色。</div>
+              </div>
+  
+              <div class="value">
+                <select class="setting_value" id="_via_settings.ui.image.region_color"></select>
+              </div>
+            </div>
+  
+            <div class="row">
+              <div class="variable">
+                <div class="name">区域标签字体</div>
+                <div class="desc">显示区域标签的字体大小和字体系列。</div>
+              </div>
+
+            <div class="value">
+              <input class="setting_value" id="_via_settings.ui.image.region_label_font" placeholder="12px Arial"/>
+            </div>
+          </div>
+
+          <div class="row">
+              <div class="variable">
+                <div class="name">预加载缓冲区大小</div>
+                <div class="desc">图像被预加载在缓冲区中，以允许下一个/上一个图像更平滑的导航。较大的缓冲区大小可能会降低浏览器的整体性能。若要禁用预加载，请将“缓冲区大小”设置为0。</div>
+              </div>
+              <div class="value">
+                <input class="setting_value" type="text" id="_via_settings.core.buffer_size">
+              </div>
+            </div>
+  
+            <div class="row">
+              <div class="variable">
+                <div class="name">图像注释编辑器</div>
+                <div class="desc">当选择一个区域时，图像上的注释编辑器被激活，用户可以更新该区域的注释。默认情况下，此图像注释编辑器放置在选定区域附近。</div>
+              </div>
+  
+              <div class="value">
+                <select class="setting_value" id="_via_settings.ui.image.on_image_annotation_editor_placement">
+                  <option value="NEAR_REGION">靠近所选区域</option>
+                  <option value="IMAGE_BOTTOM">在被注释的图像的底部</option>
+                  <option value="DISABLE">在图像注释编辑器上禁用</option>
+                </select>
+              </div>
+            </div>
+  
+          <div class="row" style="border:none;">
+            <button onclick="settings_save()" value="save_settings" style="margin-top:2rem">保存</button>
+            <button onclick="settings_panel_toggle()" value="cancel_settings" style="margin-left:2rem;">取消</button>
+          </div>
+        </div> <!-- end of settings panel -->
+
+        <div id="page_404" class="display_area_content display_none narrow_page_content">
+          <h2>未找到文件</h2>
+          <p>文件名: <span style="font-family:Mono;" id="page_404_filename"></span></p>
+
+          <p>我们推荐你在<span class="text_button" title="打开项目设置" onclick="settings_panel_toggle()">项目设置</span>中更新默认路径为包含这个图片的文件夹.</p>
+
+          <p>临时的修正解决方案是使用 <span class="text_button" title="加载或添加图片" onclick="sel_local_images()">浏览器的文件选择</span> 来手动定位添加图片。 我们不推荐这个方法，因为每次在VIA应用中加载这个项目，你需要重复这个过程。</p>
+        </div> <!-- end of file not found panel -->
+
+        <div id="page_start_info" class="display_area_content display_none narrow_page_content">
+          <ul>
+            <li>开始标记, <span class="text_button" title="加载或添加图片" onclick="sel_local_images()">选择图片</span> 并且绘制区域</li>
+            <li>使用 <span class="text_button" title="切换属性编辑区域" onclick="toggle_attributes_editor()">属性编辑器</span> 定义属性 (比如 name) 以及 <span class="text_button" title="切换标注编辑器区域" onclick="annotation_editor_toggle_all_regions_editor()">标注编辑器</span> 使用这些属性来描述每个区域 (比如 cat).</li>
+            <!-- <li>记得在关闭应用之前<span class="text_button" onclick="project_save_with_confirm()">保存</span> 你的项目，这样后续你可以加载 <span class="text_button" onclick="project_open_select_project_file()">加载</span> 它继续进行标注。</li> -->
+            <li>需要帮助, 查看 <span class="text_button" onclick="set_display_area_content(VIA_DISPLAY_AREA_CONTENT_NAME.PAGE_GETTING_STARTED)">开始使用</span> 页面和预加载示例: <a href="http://www.robots.ox.ac.uk/~vgg/software/via/via_demo.html">图像标注</a> 和 <a href="http://www.robots.ox.ac.uk/~vgg/software/via/via_face_demo.html">面部标注</a>.</li>
+          </ul>
+
+        </div>
+
+        <div id="page_getting_started" class="display_area_content display_none narrow_page_content">
+          <p>更详细的用户使用指导 (包含截屏和描述) <a href="http://www.robots.ox.ac.uk/~vgg/software/via/docs/user_guide.html">获取</a>.</p>
+          <ol>
+            <li><strong>加载图片</strong>: 第一步是加载所有你想标注的图像. 在VIA项目中有很多种方式来添加图片. 选择使用于你的方式.
+              <ul>
+                <li>方法 1: 通过浏览器的文件选择，选择本地图片
+                  <ol>
+                    <li>点击 <span class="text_button" title="加载或添加图片" onclick="sel_local_images()"><code>项目 &rarr; 添加本地文件</code></span></li>
+                    <li>选择想要大的图片点击 <code>打开</code></li>
+                  </ol>
+                </li>
+                <li>方法 2: 通过URL或者绝对路径加载
+                  <ol>
+                    <li>点击 <span class="text_button" title="从URL添加图片 (比如 http://www.robots.ox.ac.uk/~vgg/software/via/images/swan.jpg)" onclick="project_file_add_url_with_input()"><code>项目 &rarr; 从URL添加图片</code></span></li>
+                    <li>输入URL 点击<code>确定</code></li>
+                  </ol>
+                </li>
+                <li>方法 3: 从保存在文本文件中的url列表或者绝对路径添加文件
+                  <ol>
+                    <li>创建包含URL或者绝对路径(每行一个)的文本文件</li>
+                    <li>点击 <span class="text_button" title="从存储在文本文件中的web url或绝对路径列表中添加图像(每行一个url或路径)" onclick="sel_local_data_file('files_url')"><code>项目 &rarr; 从文本文件添加url或者绝对路径</code></span></li>
+                    <li>选择文本文件 点击 <code>打开</code></li>
+                  </ol>
+                </li>
+              </ul>
+            </li>
+            <li><strong>绘制区域</strong>: 
+
+              <ul>
+                <li>长方形、圆形和椭圆
+                  <ul>
+                    <li>按下鼠标左键，拖动鼠标光标，释放鼠标按钮。</li>
+                    <li>若要在现有区域内定义一个点，请在该区域内单击以选择它(如果尚未选中)，现在按鼠标左键，拖放以在现有区域内绘制区域。</li>
+                    <li>要进行选择，请在区域内单击。如果单击点包含多个区域，那么在该位置多次单击会将选择移到这些区域。</li>
+                  </ul>
+                </li>
+              </ul>
+
+              <ul>
+                <li>点
+                  <ul>
+                    <li>点击定义点</li>
+                    <li>若要在现有区域内绘制区域，请在区域内单击以选择该区域(如果尚未选定)，现在再次单击以定义该点。</li>
+                    <li>若要选择，请单击(或靠近)现有的点。</li>
+                  </ul>
+                </li>
+              </ul>
+
+              <ul>
+                <li>
+                    <li>点击定义顶点。</li>
+                    <li>按下 <strong>[Enter]</strong>键结束绘制区域或者按下[Esc]来取消.</li>
+                    <li>如果第一个顶点需要定义在一个现有的区域内，点击区域内选择它(如果还没有选择)，现在再次点击定义顶点。</li>
+                    <li>要进行选择，请在区域内单击。如果单击点包含多个区域，那么在该位置多次单击会将选择移到这些区域。</li>
+                </li>
+              </ul>
+            </li>
+
+            <li><strong>创建标注</strong>: 有关此步骤的更详细描述, 查看 <a href="http://www.robots.ox.ac.uk/~vgg/software/via/docs/creating_annotations.html">创建标注: VIA用户指导</a>.点击 <span class="text_button" onclick="toggle_attributes_editor()"><code>视图 &rarr; 切换属性编辑器</code></span> 展示左侧属性编辑区域 并添加所需的文件或区域属性(例如name)。 现在点击 <span class="text_button" onclick="annotation_editor_toggle_all_regions_editor()"><code>视图 &rarr; 切换标注编辑器</code></span> 在底部显示标注编辑器. 更新每块区域的标注.</li>
+            <li><strong>导出标注</strong>: 导出json和csv格式的标注, 点击头部菜单栏的 <span class="text_button" onclick="download_all_region_data('csv')"><code>标注 &rarr; 导出标注</code></span>。</li>
+            <li><strong>保存项目</strong>: 想要保存项目, 点击头部菜单栏的 <span class="text_button" onclick="project_save_with_confirm()"><code>项目 &rarr; 保存</code></span>。</li>
+          </ol>
+        </div>
+
+        <div id="page_load_ongoing" class="display_area_content narrow_page_content">
+          <div style="text-align:center">
+            <a href="http://www.robots.ox.ac.uk/~vgg/software/via/">
+              <svg height="160" viewbox="0 0 400 160" style="background-color:#212121;">
+                <use xlink:href="#via_logo"></use>
+              </svg>
+            </a>
+            <div style="margin-top:4rem">加载中 ...</div>
+          </div>
+        </div>
+
+        <div id="page_about" class="display_area_content display_none" style="width:40rem !important">
+          <div style="text-align:center">
+            <a href="http://www.robots.ox.ac.uk/~vgg/software/via/">
+              <svg height="160" viewbox="0 0 400 160" style="background-color:#212121;">
+                <use xlink:href="#via_logo"></use>
+              </svg>
+            </a>
+          </div>
+
+          <p style="font-family:mono; font-size:0.8em;text-align:center;"><a href="https://gitlab.com/vgg/via/blob/master/CHANGELOG">Version 2.0.10</a></p>
+          <p>VGG Image Annotator (VIA) is an image annotation tool that can be used to define regions in an image and create textual descriptions of those regions. VIA is an <a href="https://gitlab.com/vgg/via/">open source project</a> developed at the <a href="http://www.robots.ox.ac.uk/~vgg/">Visual Geometry Group</a> and released under the BSD-2 clause <a href="https://gitlab.com/vgg/via/blob/master/LICENSE">license</a>.</p>
+          <p>Here is a list of some salient features of VIA:
+            <ul>
+              <li>based solely on HTML, CSS and Javascript (no external javascript libraries)</li>
+              <li>can be used off-line (full application in a single html file of size &lt; 400KB)</li>
+              <li>requires nothing more than a modern web browser (tested on Firefox, Chrome and Safari)</li>
+              <li>supported region shapes: rectangle, circle, ellipse, polygon, point and polyline</li>
+              <li>import/export of region data in csv and json file format</li>
+            </ul>
+          </p>
+          <p>For more details, visit <a href="http://www.robots.ox.ac.uk/~vgg/software/via/">http://www.robots.ox.ac.uk/~vgg/software/via/</a>.</p>
+          <p>&nbsp;</p>
+          <p>Copyright &copy; 2020, <a href="mailto:adutta-removeme@robots.ox.ac.uk">Abhishek Dutta</a>,Visual Geometry Group, Oxford University and <a target="_blank" href="https://gitlab.com/vgg/via/blob/master/Contributors.md">VIA Contributors</a>.</p>
+        </div> <!-- end of page_about -->
+
+        <div id="page_license" class="display_area_content display_none narrow_page_content">
+          <pre>
+Copyright (c) 2016-2019, Abhishek Dutta, Visual Geometry Group, Oxford University and VIA Contributors.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+          </pre>
+        </div>
+      </div> <!-- end of display_area -->
+    </div> <!-- end of middle_panel -->
+
+    <!-- this vertical spacer is needed to allow scrollbar to show
+         items like Keyboard Shortcut hidden under the attributes panel -->
+    <div style="width: 100%;" id="vertical_space"></div>
+
+    <!-- DEMO SCRIPT AUTOMATICALLY INSERTED BY VIA PACKER SCRIPT -->
+    <!-- <script type="module" src="common.js"></script> -->
+    <script src="via.js"></script>
+  </body>
+</html>
